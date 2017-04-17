@@ -4,13 +4,13 @@ Oftentimes, it is necessary to store a password or some other secret within a sc
 
 In this article, I’ll discuss and provide examples of a number of other options, starting with the straightforward, ending by leveraging the mechanism used by Microsoft to secure PowerShell DSC configurations.
 
-Whilst this article discusses passwords, it can obviously be applied to any secret that you want to secure or encrypt.
+Whilst this article discusses passwords, it can be applied to any secret that you want to secure or encrypt.
 
-**NB** - In all of these examples, I have purposefully included my password files so you can see what they look like.  Make sure you don't do this with your real passwords!  Use a  [.gitignore](https://git-scm.com/docs/gitignore) file to hide things you don't want in source control.  If you save your secrets to source control by mistake, this walks you through [removing sensitive data from a repository](https://help.github.com/articles/removing-sensitive-data-from-a-repository/), but don't forget to then change the potentially compromised password.
+**NB** - In all of these examples, I have purposefully included my password files so you can see what they look like.  Make sure you don't do this with your real passwords!  Use a  [.gitignore](https://git-scm.com/docs/gitignore) file to hide things you don't want in source control.  If you save your secrets to source control by mistake, this walks you through [removing sensitive data from a repository](https://help.github.com/articles/removing-sensitive-data-from-a-repository/), but don't forget to then change the potentially-compromised password.
 
 ## Option 1 – Store the password in a separate file outside the script
 
-This is a really simple approach requiring little effort.  The password is stored in a text file format outside the main script, in the current directory
+This is a really simple approach requiring little effort.  The password is stored in a text file format outside the main script, in the current directory:
 
 ```powershell
 
@@ -39,7 +39,7 @@ You know my password too!
 
 ```
 
-This solves the version control issue, as long as you’re careful not to check in the external file, and also allows the same script to be used in multiple environments.  I would generally encourage you to environmental settings out to a separate file, however, storing passwords in plain text is not ideal, so lets explore more options.
+This solves the version control issue, as long as you’re careful not to check in the external file, and also allows the same script to be used in multiple environments.  Whilst storing environmental settings in a separate file is a good practice, storing passwords in plain text is not ideal, so lets explore more options.
 
 ## Option 2 – Use a Windows account to encrypt the password
 
