@@ -131,10 +131,10 @@ $password = $encrypted | ConvertTo-SecureString -Key (Get-Content $KeyFile)
 $MyCredentials = New-Object -TypeName System.Management.Automation.PSCredential `
     -ArgumentList $user, $password
 # password is available in plain text like this:
-$decryptedPassword =$MyCredential.GetNetworkCredential().password
+$decryptedPassword =$MyCredentials.GetNetworkCredential().password
 
 # .. or again, as per Option 2, if you just want to access the password directly:
-$decryptedPassword2 = $Marshal::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($password))
+$decryptedPassword2 = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($password))
 ```
 
 Protecting the keyfile is important, as that can be used by anyone to decrypt the password.
