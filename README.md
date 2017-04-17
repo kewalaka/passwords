@@ -53,7 +53,7 @@ $password = read-host -prompt "Enter your Password" -AsSecureString
 ConvertFrom-SecureString $password | out-file .\mypassword.txt
 ```
 
-The resulting password  is tied to your user profile **on the machine you used to create the password** - only by using the same machine + your same user account will you be able to decrypt the password successfully.  This is provided by [Windows Data Protection API (DPAPI)](https://en.wikipedia.org/wiki/Data_Protection_API).
+The resulting password  is tied to your user profile **on the machine you used to create the password** - only by using the same machine + your same user account will you be able to decrypt the password successfully.  This is provided by the [Windows Data Protection API (DPAPI)](https://en.wikipedia.org/wiki/Data_Protection_API).
 
 If you inspect the contents of [mypassword.txt](https://raw.githubusercontent.com/kewalaka/passwords/master/Option%202/mypassword.txt), it will look something like this (yours will be different, because it will be created for your user on your machine).  It will still look scarily long!
 
@@ -191,7 +191,7 @@ $targetLocation = '.\mypassword.xml'
 
 The rest of the script is not included above, for brevity.  However, with the above parameters, [CreatePassword.ps1](https://github.com/kewalaka/passwords/blob/master/Option%204/CreatePassword.ps1) will encrypt $password into a file called 'mypassword.xml' in the current directory.  This XML file includes both the encrypted password and the key encrypted by the certificate.
 
-It creates an XML file that looks like this:
+It creates [an XML file](https://raw.githubusercontent.com/kewalaka/passwords/master/Option%204/mypassword.xml) that looks like this:
 
 ``` xml
 <Objs Version="1.1.0.1" xmlns="http://schemas.microsoft.com/powershell/2004/04">
@@ -242,7 +242,10 @@ We've come a long way from the simplicity of Option 1, but do have a mechanism f
 
 ## Option X ##
 
+You're most welcome to contact me, or open up a GitHub issue if you'd like to discuss other options, if you'd like to educate my feeble grasp of things, or to correct any errors you might spot.
+
+## Random disclaimer ##
+
 Use of the above is at your own risk, I don't guarantee there aren't any banana peelings left for you to trip on.
 
-You're most welcome to contact me, or open up a GitHub issue if you'd like to discuss other options, if you'd like to educate my feeble grasp of things, or to correct any errors you might spot.
 
