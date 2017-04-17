@@ -6,7 +6,7 @@ In this article, I’ll discuss and provide examples of a number of other option
 
 Whilst this article discusses passwords, it can obviously be applied to any secret that you want to secure or encrypt.
 
-**NB** - In all of these examples, I have purposefully included my password files from GitHub so you can see what they look like.  Make sure you don't do this with your real passwords!  Use a  [.gitignore](https://git-scm.com/docs/gitignore) file to hide things you don't want in source control.  If you save your secrets to source control by mistake, this walks you through [removing sensitive data from a repository](https://help.github.com/articles/removing-sensitive-data-from-a-repository/), but don't forget to then change the potentially compromised password.
+**NB** - In all of these examples, I have purposefully included my password files so you can see what they look like.  Make sure you don't do this with your real passwords!  Use a  [.gitignore](https://git-scm.com/docs/gitignore) file to hide things you don't want in source control.  If you save your secrets to source control by mistake, this walks you through [removing sensitive data from a repository](https://help.github.com/articles/removing-sensitive-data-from-a-repository/), but don't forget to then change the potentially compromised password.
 
 ## Option 1 – Store the password in a separate file outside the script
 
