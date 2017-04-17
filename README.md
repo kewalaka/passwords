@@ -45,7 +45,7 @@ This solves the version control issue, as long as you’re careful not to check 
 
 You're not so keen on storing passwords in plain text?  Good.
 
-Another approach uses your Windows credentials to encrypt the password, you can create an encrypted password using the following code (see CreatePassword.ps1):
+Another approach uses your Windows credentials to encrypt the password, you can create an encrypted password using the following code (see [CreatePassword.ps1](https://github.com/kewalaka/passwords/blob/master/Option%202/CreatePassword.ps1)):
 
 ``` powershell
 $password = read-host -prompt "Enter your Password" -AsSecureString
@@ -61,7 +61,7 @@ If you inspect the contents of mypassword.txt, it will look something like this 
 01000000d08c9ddf0115d1118c7a00c04fc297eb010000007d703781d2413e41a30a32725ca37e8000000000020000000000106600000001000020000000e84793fdafb6f74aa100696ce897ec3efb1f27152ba4f3a897cf30d93f996d50000000000e80000000020000200000001b9e4de1e8b977e2490e28956b27d63ac594fbb714a4808a36199a0c3148f06920000000730f687d4809e94db81fa4ab0cfb99c927b009033931783faf67f7676bcf24a540000000629d733a1e1bfe79ddc83dd98e579c3934cd8bf304cad02227446ebe2299c9940851abbfd1ad2d2f9edd11554343680194d06e11098e720f34e8aa7eeeb42fb4
 ```
 
-There are a number of ways to decrypt this password (see below, or UsePassword.ps1)
+There are a number of ways to decrypt this password (see below, or [UsePassword.ps1](https://github.com/kewalaka/passwords/blob/master/Option%202/UsePassword.ps1))
 
 ``` powershell
 # Mary is smarter than the average bear, and has encrypted her password
@@ -86,7 +86,7 @@ $decryptedPassword2 = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto(
 
 In order to ensure the password is being decrypted OK, you'll need access to the machine & the user account used to create the password.  It also means that anyone testing or developing the script will need to create encrypted credentials.
 
-Instead of tieing the password to the user profile on the machine, it is also possible to tie it to the localmachine account (aka 'SYSTEM').  See CreatePasswordTiedToMachine.ps1 and UsePasswordTiedToMachine.ps1 for examples.  This allows anyone using the machine to decrypt the password.
+Instead of tieing the password to the user profile on the machine, it is also possible to tie it to the localmachine account (aka 'SYSTEM').  See [CreatePasswordTiedToMachine.ps1](https://github.com/kewalaka/passwords/blob/master/Option%202/CreatePasswordTiedToMachine.ps1) and [UsePasswordTiedToMachine.ps1](https://github.com/kewalaka/passwords/blob/master/Option%202/UsePasswordTiedToMachine.ps1) for examples.  This allows anyone using the machine to decrypt the password.
 
 This is quite a secure approach, but not very convenient or scalable.  Definitely worth considering if you don't mind the limitations.
 
@@ -99,7 +99,7 @@ The benefit of this approach is it is more portable, as long as you have the key
 
 The downside is obvious - if the keyfile is compromised, or accidentally checked into source control, it's not much better than having the password in plain text.
 
-Here's how to create the encrypted password, stored to mypassword.txt and keyfile, stored to my.keyfile.   This is from CreatePassword.ps1:
+Here's how to create the encrypted password, stored to mypassword.txt and keyfile, stored to my.keyfile.   This is from [CreatePassword.ps1](https://github.com/kewalaka/passwords/blob/master/Option%203/CreatePassword.ps1):
 
 ``` powershell
 $KeyFile = "$PSScriptRoot\my.keyfile"
@@ -114,7 +114,7 @@ $Password = Read-Host "Please enter your password" -AsSecureString
 $Password | ConvertFrom-SecureString -Key $Key | Out-File $PasswordFile
 ```
 
-The following illustrates use, again from UsePassword.ps1:
+The following illustrates use, again from [UsePassword.ps1](https://github.com/kewalaka/passwords/blob/master/Option%203/UsePassword.ps1):
 
 ``` powershell
 # Mary is getting cunning and has secured her encrypted password with a keyfile
@@ -155,7 +155,7 @@ First, we create the necessary certificate + keys.  Self-signed certificates (i.
 
 Your friendly administrator might have already created a certificate for this purpose, so, check with them first.  If not, here's what you need to do.
 
-First, we create a certificate on your Windows 10 authoring PC, I create a "C:\Admin\Certs" folder to store these files.
+First, we create a certificate on your Windows 10 authoring PC, I create a "C:\Admin\Certs" folder to store these files, from [Stage1-CreateCertificate.ps1](https://github.com/kewalaka/passwords/blob/master/Option%204/Stage1-CreateCertificates.ps1)
 
 ``` powershell
 # In order to generate the certificate using this method, you need to use Windows 10 or Server 2016
@@ -168,7 +168,7 @@ $mypwd = ConvertTo-SecureString -String "This password isn't very secure coz eve
 $cert | Export-PfxCertificate -FilePath "C:\Admin\Certs\MyCertificateAndKey.pfx" -Password $mypwd -Force
 ```
 
-We then take the resulting PFX file and copy it to the target machine that will run the script and need to decrypt the password
+We then take the resulting PFX file and copy it to the target machine that will run the script and need to decrypt the password, from [Stage2-ImportCertificate.ps1](https://github.com/kewalaka/passwords/blob/master/Option%204/Stage2-ImportCertificate.ps1)
 
 ``` powershell
 # Assumes the .pfx file generated above has been copied to c:\Admin\MyCertificateAndKey.pfx
@@ -179,7 +179,7 @@ Import-PfxCertificate -FilePath "C:\Admin\MyCertificateAndKey.pfx" -CertStoreLoc
 
 This is fairly involved, we can't directly encrypt the string, because the Encrypt method of the RSACryptoServiceProvider class expects a byte array.
 
-If you take a look at CreatePassword.ps1, there are 3 key parameters:
+If you take a look at [CreatePassword.ps1](https://github.com/kewalaka/passwords/blob/master/Option%204/CreatePassword.ps1), there are 3 key parameters:
 
 ``` powershell
 #region: Parmeters
@@ -189,7 +189,7 @@ $targetLocation = '.\mypassword.xml'
 #endregion
 ```
 
-The rest of the script is not included above, for brevity.  However, with the above parameters, CreatePassword.ps1 will encrypt $password into a file called 'mypassword.xml' in the current directory.  This XML file includes both the encrypted password and the key encrypted by the certificate.
+The rest of the script is not included above, for brevity.  However, with the above parameters, [CreatePassword.ps1](https://github.com/kewalaka/passwords/blob/master/Option%204/CreatePassword.ps1) will encrypt $password into a file called 'mypassword.xml' in the current directory.  This XML file includes both the encrypted password and the key encrypted by the certificate.
 
 It creates an XML file that looks like this:
 
@@ -208,7 +208,7 @@ It creates an XML file that looks like this:
 </Objs>
 ```
 
-To use this certificate, see the example in Use-Password.ps1
+To use this certificate, see the example in [Use-Password.ps1](https://github.com/kewalaka/passwords/blob/master/Option%204/UsePassword.ps1)
 
 ``` powershell
 $certificateCommonName = 'SecretEncryptionCert'
