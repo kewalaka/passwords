@@ -6,6 +6,8 @@ In this article, I’ll discuss and provide examples of a number of other option
 
 Whilst this article discusses passwords, it can obviously be applied to any secret that you want to secure or encrypt.
 
+**NB** - In all of these examples, I have purposefully not excluded my password files from GitHub so you can see what they look like.  Make sure you don't do this with your real passwords!  Use a  [.gitignore](https://git-scm.com/docs/gitignore) file to hide things you don't want in source control.  If you save your secrets to source control by mistake, this walks you through [removing sensitive data from a repository](https://help.github.com/articles/removing-sensitive-data-from-a-repository/), *and then change the potentially compromised password*.
+
 ## Option 1 – Store the password in a separate file outside the script
 
 This is a really simple approach requiring little effort.  The password is stored in a text file format outside the main script.
@@ -22,7 +24,7 @@ You can also use a structured file format like JSON to store all environment spe
 ```powershell
 
 # get secrets and environmental settings from a .json file
-> $settings = Get-Content .\environmentals.json | ConvertFrom-Json
+> $settings = Get-Content $PSScriptRoot\environmentals.json | ConvertFrom-Json
 > $settings
 
 UserName Password                      Domain
@@ -30,23 +32,14 @@ UserName Password                      Domain
 Bob      Oh dear, you know my password prod
 Mary     You know my password too!     prod
 
+# to illustrate how to read a specific password...
 > $MaryPassword = ( $settings | where {$_.UserName -eq 'Mary'} ).Password
 > $MaryPassword
 You know my password too!
 
 ```
 
-This solves the version control issue, as long as you’re careful not to check in the password (e.g. use .gitignore), and also allows the same script to be used in multiple environments.
-
-Therefore, I should adjust my .gitignore to include:
-
-```
-# Passwords
-environmentals.json
-mypassword.txt
-```
-
-Obviously, it is very important to store the file securely!
+This solves the version control issue, as long as you’re careful not to check in the password, and also allows the same script to be used in multiple environments.
 
 ## Option 2 – Use a Windows account to encrypt the password
 
@@ -60,7 +53,7 @@ $password = read-host -prompt "Enter your Password" -AsSecureString
 ConvertFrom-SecureString $password | out-file .\mypassword.txt
 ```
 
-The resulting password  is tied to your user profile **on the machine you used to create the password** - only by using the same machine + your same user account will you be able to decrypt the password successfully.  This is provided by [Window's Data Protection API (DPAPI)](https://en.wikipedia.org/wiki/Data_Protection_API).
+The resulting password  is tied to your user profile **on the machine you used to create the password** - only by using the same machine + your same user account will you be able to decrypt the password successfully.  This is provided by [Windows Data Protection API (DPAPI)](https://en.wikipedia.org/wiki/Data_Protection_API).
 
 If you inspect the contents of mypassword.txt, it will look something like this (yours will be different, because it will be created for your user on your machine)
 
@@ -73,7 +66,7 @@ There are a number of ways to decrypt this password (see below, or UsePassword.p
 ``` powershell
 # Mary is smarter than the average bear, and has encrypted her password
 $encrypted = Get-Content "$PSScriptRoot\mypassword.txt"
-$user = "Mary"
+$user = "Prod\Mary"
 $password = ConvertTo-SecureString $encrypted
 
 # at this point, '$password' is a SecureString

@@ -4,7 +4,7 @@ $encrypted = '76492d1116743f0423413b16050a5345MgB8AFkAbABqAEkANwBXADgANwAzADkAdQ
 
 # this is the keyfile used to encrypt and decrypt the password
 $KeyFile = "$PSScriptRoot\my.keyfile"
-$user = "Mary"
+$user = "Prod\Mary"
 # the important part is the 'Key' parameter, which is how you specify 
 $password = $encrypted | ConvertTo-SecureString -Key (Get-Content $KeyFile)
 

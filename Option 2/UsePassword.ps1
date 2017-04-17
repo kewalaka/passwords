@@ -1,6 +1,6 @@
 # Mary is smarter than the average bear, and has encrypted her password
 $encrypted = Get-Content "$PSScriptRoot\mypassword.txt"
-$user = "Mary"
+$user = "Prod\Mary"
 $password = ConvertTo-SecureString $encrypted
 
 # at this point, '$password' is a SecureString
