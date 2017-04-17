@@ -1,0 +1,11 @@
+[{
+        "UserName": "Bob",
+        "Password": "Oh dear, you know my password",
+        "Domain": "prod"
+    },
+    {
+        "UserName": "Mary",
+        "Password": "You know my password too!",
+        "Domain": "prod"
+    }
+]
