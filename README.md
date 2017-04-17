@@ -78,7 +78,7 @@ $password = ConvertTo-SecureString $encrypted
 $MyCredentials = New-Object -TypeName System.Management.Automation.PSCredential `
     -ArgumentList $user, $password
 # password is available in plain text like this:
-$decryptedPassword =$MyCredential.GetNetworkCredential().password
+$decryptedPassword =$MyCredentials.GetNetworkCredential().password
 
 # Alternatively, if you just want to access the password directly:
 $decryptedPassword2 = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($password))
