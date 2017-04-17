@@ -55,7 +55,7 @@ ConvertFrom-SecureString $password | out-file .\mypassword.txt
 
 The resulting password  is tied to your user profile **on the machine you used to create the password** - only by using the same machine + your same user account will you be able to decrypt the password successfully.  This is provided by [Windows Data Protection API (DPAPI)](https://en.wikipedia.org/wiki/Data_Protection_API).
 
-If you inspect the contents of mypassword.txt, it will look something like this (yours will be different, because it will be created for your user on your machine).  It will still look scarily long!
+If you inspect the contents of [mypassword.txt](https://raw.githubusercontent.com/kewalaka/passwords/master/Option%202/mypassword.txt), it will look something like this (yours will be different, because it will be created for your user on your machine).  It will still look scarily long!
 
 ```
 01000000d08c9ddf0115d1118c7a00c04fc297eb010000007d703781d2413e41a30a32725ca37e8000000000020000000000106600000001000020000000e84793fdafb6f74aa100696ce897ec3efb1f27152ba4f3a897cf30d93f996d50000000000e80000000020000200000001b9e4de1e8b977e2490e28956b27d63ac594fbb714a4808a36199a0c3148f06920000000730f687d4809e94db81fa4ab0cfb99c927b009033931783faf67f7676bcf24a540000000629d733a1e1bfe79ddc83dd98e579c3934cd8bf304cad02227446ebe2299c9940851abbfd1ad2d2f9edd11554343680194d06e11098e720f34e8aa7eeeb42fb4
