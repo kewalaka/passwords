@@ -53,7 +53,7 @@ $password = read-host -prompt "Enter your Password" -AsSecureString
 ConvertFrom-SecureString $password | out-file .\mypassword.txt
 ```
 
-The resulting password  is tied to your user profile **on the machine you used to create the password** - only by using the same machine + your same user account will you be able to decrypt the password successfully.  This is provided by the [Windows Data Protection API (DPAPI)](https://en.wikipedia.org/wiki/Data_Protection_API).
+The resulting password  is tied to your user profile **on the machine you used to create the password** - only by using the same machine and your same user account will you be able to decrypt the password successfully.  This is provided by the [Windows Data Protection API (DPAPI)](https://en.wikipedia.org/wiki/Data_Protection_API).
 
 If you inspect the contents of [mypassword.txt](https://raw.githubusercontent.com/kewalaka/passwords/master/Option%202/mypassword.txt), it will look something like this (yours will be different, because it will be created for your user on your machine).  It will still look scarily long!
 
@@ -151,7 +151,7 @@ This is quite a complex example, that I combine this with guidance from Microsof
 
 ### Create a certificate ###
 
-First, we create the necessary certificate + keys.  Self-signed certificates (i.e. ones that you can  create yourself for free) are perfectly fine for this, even in a production environment.  However, as with the keyfile, protecting the private key is important, as if that is lost, it can be used to decrypt any secrets created.
+First, we create the necessary certificate and keys.  Self-signed certificates (i.e. ones that you can  create yourself for free) are perfectly fine for this, even in a production environment.  However, as with the keyfile, protecting the private key is important, as if that is lost, it can be used to decrypt any secrets created.
 
 Your friendly administrator might have already created a certificate for this purpose, so, check with them first.  If not, here's what you need to do.
 
