@@ -155,7 +155,7 @@ First, we create the necessary certificate + keys.  Self-signed certificates (i.
 
 Your friendly administrator might have already created a certificate for this purpose, so, check with them first.  If not, here's what you need to do.
 
-First, we create a certificate on your Windows 10 authoring PC, I create a "C:\Admin\Certs" folder to store these files, from [Stage1-CreateCertificate.ps1](https://github.com/kewalaka/passwords/blob/master/Option%204/Stage1-CreateCertificates.ps1)
+First, we create a certificate on your Windows 10 authoring PC, I create a "C:\Admin\Certs" folder to store these files, the following is from [Stage1-CreateCertificate.ps1](https://github.com/kewalaka/passwords/blob/master/Option%204/Stage1-CreateCertificates.ps1):
 
 ``` powershell
 # In order to generate the certificate using this method, you need to use Windows 10 or Server 2016
@@ -168,7 +168,7 @@ $mypwd = ConvertTo-SecureString -String "This password isn't very secure coz eve
 $cert | Export-PfxCertificate -FilePath "C:\Admin\Certs\MyCertificateAndKey.pfx" -Password $mypwd -Force
 ```
 
-We then take the resulting PFX file and copy it to the target machine that will run the script and need to decrypt the password, from [Stage2-ImportCertificate.ps1](https://github.com/kewalaka/passwords/blob/master/Option%204/Stage2-ImportCertificate.ps1)
+We then take the resulting PFX file and copy it to the target machine that will run the script and need to decrypt the password, this is from [Stage2-ImportCertificate.ps1](https://github.com/kewalaka/passwords/blob/master/Option%204/Stage2-ImportCertificate.ps1):
 
 ``` powershell
 # Assumes the .pfx file generated above has been copied to c:\Admin\MyCertificateAndKey.pfx
