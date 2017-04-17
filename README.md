@@ -2,20 +2,20 @@
 
 Oftentimes, it is necessary to store a password or some other secret within a script.  It’s not uncommon to see password in plain text in a script.  The obvious concern here is anyone who can read the script immediately knows the password.  If you use a source code repository to version control your scripts (which since you're reading this on GitHub, I assume you do), this means your passwords are stored in plain text in this repository.  
 
-In this article, I’ll discuss and provide examples of a number of other options, starting with the straightforward, ending with the mechanism used by Microsoft to secure PowerShell DSC configurations.
+In this article, I’ll discuss and provide examples of a number of other options, starting with the straightforward, ending by leveraging the mechanism used by Microsoft to secure PowerShell DSC configurations.
 
 Whilst this article discusses passwords, it can obviously be applied to any secret that you want to secure or encrypt.
 
-**NB** - In all of these examples, I have purposefully not excluded my password files from GitHub so you can see what they look like.  Make sure you don't do this with your real passwords!  Use a  [.gitignore](https://git-scm.com/docs/gitignore) file to hide things you don't want in source control.  If you save your secrets to source control by mistake, this walks you through [removing sensitive data from a repository](https://help.github.com/articles/removing-sensitive-data-from-a-repository/), don't forget to *then change the potentially compromised password*.
+**NB** - In all of these examples, I have purposefully not excluded my password files from GitHub so you can see what they look like.  Make sure you don't do this with your real passwords!  Use a  [.gitignore](https://git-scm.com/docs/gitignore) file to hide things you don't want in source control.  If you save your secrets to source control by mistake, this walks you through [removing sensitive data from a repository](https://help.github.com/articles/removing-sensitive-data-from-a-repository/), but don't forget to then change the potentially compromised password.
 
 ## Option 1 – Store the password in a separate file outside the script
 
-This is a really simple approach requiring little effort.  The password is stored in a text file format outside the main script.
+This is a really simple approach requiring little effort.  The password is stored in a text file format outside the main script, in the current directory
 
 ```powershell
 
 # simple one password in a text file
-$password = Get-Content $PSScriptRoot\mypassword.txt
+$password = Get-Content .\mypassword.txt
 
 ```
 
@@ -24,7 +24,7 @@ You can also use a structured file format like JSON to store all environment spe
 ```powershell
 
 # get secrets and environmental settings from a .json file
-> $settings = Get-Content $PSScriptRoot\environmentals.json | ConvertFrom-Json
+> $settings = Get-Content .\environmentals.json | ConvertFrom-Json
 > $settings
 
 UserName Password                      Domain
@@ -73,7 +73,8 @@ $password = ConvertTo-SecureString $encrypted
 # > $password
 # System.Security.SecureString
 
-# Powershell's prefer method of passing usernames and passwords is via a PSCredential object:
+# Powershell's prefer method of passing usernames and passwords is via a PSCredential object
+# this includes both the domain\username and the password:
 $MyCredentials = New-Object -TypeName System.Management.Automation.PSCredential `
     -ArgumentList $user, $password
 # password is available in plain text like this:
@@ -83,16 +84,16 @@ $decryptedPassword =$MyCredential.GetNetworkCredential().password
 $decryptedPassword2 = [System.Runtime.InteropServices.Marshal]::PtrToStringAuto([System.Runtime.InteropServices.Marshal]::SecureStringToBSTR($password))
 ```
 
-Confirming this is working in production becomes a little harder with this approach, in order to ensure the password is being decrypted OK, you'll need access to the machine & the user account used to create the password.  It also means that anyone testing or developing the script will need to create encrypted credentials.
+In order to ensure the password is being decrypted OK, you'll need access to the machine & the user account used to create the password.  It also means that anyone testing or developing the script will need to create encrypted credentials.
 
-Instead of tieing the password to the user profile on the machine, it is also possible to tie it to the localmachine account (aka 'SYSTEM').  See CreatePasswordTiedToMachine.ps1 and UsePasswordTiedToMachine.ps1 for examples.
+Instead of tieing the password to the user profile on the machine, it is also possible to tie it to the localmachine account (aka 'SYSTEM').  See CreatePasswordTiedToMachine.ps1 and UsePasswordTiedToMachine.ps1 for examples.  This allows anyone using the machine to decrypt the password.
 
 This is quite a secure approach, but not very convenient or scalable.  Definitely worth considering if you don't mind the limitations.
 
 
 ## Option 3 - Use a 'key' stored in a separate file to encrypt the password
 
-This is similiar to option 1, however, instead of simply storing the password unencrypted in a file, the means to encrypt & decrypt the file is via a 'keyfile'.  This is just a text file containing a hash.  
+This is similiar to option 1, however, instead of simply storing the password unencrypted in a file, the means to encrypt & decrypt the file is via a 'keyfile'.  
 
 The benefit of this approach is it is more portable, as long as you have the keyfile, you can decrypt the password.
 
@@ -142,11 +143,11 @@ Protecting the keyfile is important, as that can be used by anyone to decrypt th
 
 One problem with Option 3, is the importance placed on the keyfile.  An alternative approach is to use TLS (aka "SSL") certificates, as explained by [David Wyatt's article](https://powershell.org/2014/02/01/revisited-powershell-and-encryption/).  
 
-This is quite a complex example, that I combine this with guidance from Microsoft on [how to secure passwords in Powershell DSC](https://msdn.microsoft.com/en-us/powershell/dsc/securemof).  Combining these approaches is purely optional - there is nothing to prevent you from creating your own certificates specficially for encrypting Powershell script secrets.
-
-In this case, and for SSL encyption generally, certificate encryption works by having a pair of keys
+Certificate encryption works by having a pair of keys
  - A "public" key, widely shared.  Anyone can encrypt secrets with this.
  - A "private" key, not shared.  Only the holder of the paired private key can decrypt secrets that have been encrypted by the public key.
+
+This is quite a complex example, that I combine this with guidance from Microsoft on [how to secure passwords in Powershell DSC](https://msdn.microsoft.com/en-us/powershell/dsc/securemof).  Combining these approaches is purely optional - there is nothing to prevent you from creating your own certificates specficially for encrypting Powershell script secrets.
 
 ### Create a certificate ###
 
@@ -154,11 +155,11 @@ First, we create the necessary certificate + keys.  Self-signed certificates (i.
 
 Your friendly administrator might have already created a certificate for this purpose, so, check with them first.  If not, here's what you need to do.
 
-In order to generate the certificate using this method, you need to use Windows 10 or Server 2016, however you can use the resulting certificates on any recent version of Windows (probably 2008/Vista+)
-
-First, we create a certificate on your authoring PC, I create a "C:\Admin\Certs" folder to store these files.
+First, we create a certificate on your Windows 10 authoring PC, I create a "C:\Admin\Certs" folder to store these files.
 
 ``` powershell
+# In order to generate the certificate using this method, you need to use Windows 10 or Server 2016
+# however you can use the resulting certificates on any recent version of Windows (probably 2008/Vista+)
 New-Item C:\Admin\Certs -Type Directory -Force -ErrorAction SilentlyContinue
 $cert = New-SelfSignedCertificate -Type DocumentEncryptionCertLegacyCsp -DnsName 'SecretEncryptionCert' -HashAlgorithm SHA256
 
